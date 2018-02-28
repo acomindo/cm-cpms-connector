@@ -13,3 +13,4 @@ __pycache__
 
 # virtualenv files
 venv
+.python-version

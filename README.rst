@@ -19,17 +19,19 @@ This is example guide how to use this library to fetch single order from acommer
 
 .. code-block:: python
 
-    from cpms import CpmsConnector
+    >>> from cpms import CpmsConnector
     
-    config = {
-        "username": "somechanel",
-        "api_key": "jZW8YjrMZeSaMQG6",
-        "api_url": "https://api.acommercedev.com/"
-    }
+    >>> config = {
+    ...     "username": "somechanel",
+    ...     "api_key": "jZW8YjrMZeSaMQG6",
+    ...     "api_url": "https://api.acommercedev.com/"
+    ... }
+    >>> cpmsconn = CpmsConnector(config)
+    >>> cpmsconn.token
+    'yourtokenkey'
 
-    
-    order_id = 'XYZ10193819'
-    channel_id = 'somechannel'
+    >>> order_id = 'XYZ10193819'
+    >>> channel_id = 'somechannel'
 
-    cpmsconn = CpmsConnector(config)
-    result = cpmsconn.get_order(channel_id, order_id)
+    >>> cpmsconn.get_order(channel_id, order_id)
+    'response body of order'

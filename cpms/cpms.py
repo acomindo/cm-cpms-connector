@@ -191,3 +191,92 @@ class CpmsConnector:
         next_link = r.links['next']['url'] if 'next' in r.links else None
         return {'data': r.json(), 'url': url} \
             if next_link else {'data': r.json()}
+
+    def _get_webhook_path(self, channel_id, partner_id):
+        if not (channel_id or partner_id):
+            raise ValueError('channel_id or partner_id must be fill')
+        return f'/channel/{channel_id}' \
+            if channel_id else f'/partner/{partner_id}'
+
+    def create_webhook(self, payload, channel_id=None, partner_id=None):
+        """Create webhook registration end point to acommerce either using
+        channel_id or partner_id
+
+        Args:
+            channel_id(str): channel_id of acommerce (CPMS)
+            partner_id(str): merchant or partner id acommerce (CPMS)
+            payload(str): webhook data format acommerce
+
+        Returns (dict): webhook data informations
+
+        """
+        path = self._get_webhook_path(channel_id, partner_id)
+        path += '/hooks'
+
+        url = urlparse(self.api_url)._replace(path=path).geturl()
+
+        r = requests.post(url=url, json=payload, headers=self.headers)
+        validate_response(r)
+
+        return r.json()
+
+    def retrieve_webhook(self, webhook_id, channel_id=None, partner_id=None):
+        """Retrieve specific webhook information using webhook_id.
+        must supply either partner_id or channel_id
+
+        Args:
+            webhook_id: registered webhook id
+            channel_id(str): channel_id of acommerce (CPMS)
+            partner_id(str): merchant or partner id acommerce (CPMS)
+
+        Returns (dict): webhook data informations
+        """
+        path = self._get_webhook_path(channel_id, partner_id)
+        path += f'/hooks/{webhook_id}'
+
+        url = urlparse(self.api_url)._replace(path=path).geturl()
+
+        r = requests.get(url=url, headers=self.headers)
+        validate_response(r)
+
+        return r.json()
+
+    def get_webhook(self, channel_id=None, partner_id=None):
+        """Get list registered webhook from acommerce using either partner_id
+        or channel_id
+
+        Args:
+            channel_id(str): channel_id of acommerce (CPMS)
+            partner_id(str): merchant or partner id acommerce (CPMS)
+
+        Returns (list): webhook data informations
+        """
+        path = self._get_webhook_path(channel_id, partner_id)
+        path += '/hooks'
+        url = url = urlparse(self.api_url)._replace(path=path).geturl()
+        r = requests.get(url, headers=self.headers)
+        validate_response(r)
+
+        return r.json()
+
+    def delete_webhook(self, webhook_id, channel_id=None, partner_id=None):
+        """remove a registered webhook
+
+        Args:
+            webhook_id: registered webhook id
+            channel_id(str): channel_id of acommerce (CPMS)
+            partner_id(str): merchant or partner id acommerce (CPMS)
+
+        Returns No Content HTTP 204
+        """
+        path = self._get_webhook_path(channel_id, partner_id)
+        path += '/hooks'
+        url = urlparse(self.api_url)._replace(path=path).geturl()
+
+        r = requests.delete(url, headers=self.headers)
+        validate_response(r)
+
+        return {
+            'code': r.status_code,
+            'message': 'Web Hook has been successfully deleted'
+        }

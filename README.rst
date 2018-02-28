@@ -1,5 +1,5 @@
 CpmsConnector
-=======
+=============
 CpmsConnector is connector to aCommerce (CPMS) Public Api
 
 

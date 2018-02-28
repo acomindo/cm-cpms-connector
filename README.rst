@@ -1,6 +1,6 @@
-Cpmscon
+CpmsConnector
 =======
-Cpmscon is connector to aCommerce (CPMS) Public Api
+CpmsConnector is connector to aCommerce (CPMS) Public Api
 
 
 Installing

@@ -75,3 +75,75 @@ class CpmsConnector:
         token = r.json()['token']['token_id']
         self._update_headers(token)
         self._token = token
+
+    def get_order(self, channel_id, order_id):
+        """retrieve single order of sales order
+
+        Args:
+            url(str): url for retrieval sales order
+        """
+        path = f'/channel/{channel_id}/order/{order_id}'
+        url = urlparse(self._fulfillment_url)._replace(path=path).geturl()
+        r = requests.get(url, headers=self.headers)
+        validate_response(r)
+        return r.json()
+
+    def get_orders_status(self, channel_id=None, partner_id=None, list_id=None,
+                          since=None, order_status=None):
+        """Get list order status of sales order
+
+        Args:
+            channel_id(str): channel_id of cpms
+            partner_id(str): merchant/partner id of cpms
+            list_id(list): list of order id
+            since(str): ISO 8601 format eg. 2015-06-18T10:30:40Z
+            order_status(str): (NEW, IN_PROGRESS, COMPLETED, CANCELED, ERROR)
+
+        Returns:
+            list: all orders
+        """
+
+        if order_status and order_status not in self.ORDER_STATUS:
+            raise ValueError(
+                'invalid order_status eg. '
+                '(NEW, IN_PROGRESS, COMPLETED, CANCELED, ERROR)'
+            )
+
+        url = urlparse(self._fulfillment_url)
+
+        # make sure channel_id or partner_id being supply
+        if channel_id:
+            path = f'/channel/{channel_id}'
+
+        elif partner_id:
+            path = f'/partner/{partner_id}'
+
+        else:
+            raise ValueError(
+                'must supply either channel_id or partner_id args')
+
+        # append sales-order-status path
+        path += '/sales-order-status'
+
+        # make sure list_id or since being supply
+        if list_id:
+            if len(list_id) > 10:
+                raise ValueError('list_id can\'t be more than 10 length')
+            path += '/id'
+            query_string = {'id': list_id}
+
+        elif since:
+            query_string = {'id': list_id}
+            if order_status in self.ORDER_STATUS:
+                query_string.update({'orderStatus': order_status})
+        else:
+            raise ValueError('must supply either list_id or since args')
+
+        query_string = urlencode(query_string, doseq=True)
+        url = url._replace(path=path, query=query_string).geturl()
+
+        r = requests.get(url, headers=self.headers)
+        validate_response(r)
+        orders = r.json()
+        next_url = r.links['next']['url'] if 'next' in r.links else None
+        return orders, next_url

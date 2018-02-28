@@ -169,3 +169,25 @@ class CpmsConnector:
             'code': r.status_code,
             'message': 'Order has been successfully created'
         }
+
+    def get_stocks(self, channel_id, partner_id, since):
+        """Get list stock of partner from specifics channel/marketplace
+
+        Args:
+            channel_id(str): channel_id cpms
+            partner_id(str): partner/merchant id
+            since(str): ISO 8601 format eg. 2015-06-18T10:30:40Z
+
+        Returns (list): list of stock
+
+        """
+        path = f'/channel/{channel_id}/allocation/merchant/{partner_id}'
+        query_string = urlencode({'since': since})
+        url = urlparse(self._fulfillment_url)._replace(
+            path=path, query=query_string).geturl()
+        r = requests.get(url, headers=self.headers)
+        validate_response(r)
+
+        next_link = r.links['next']['url'] if 'next' in r.links else None
+        return {'data': r.json(), 'url': url} \
+            if next_link else {'data': r.json()}

@@ -147,3 +147,25 @@ class CpmsConnector:
         orders = r.json()
         next_url = r.links['next']['url'] if 'next' in r.links else None
         return orders, next_url
+
+    def create_order(self, channel_id, order_id, payload):
+        """create order to acommerce (CPMS)
+
+        Args:
+            channel_id(str): channel_id of cpms
+            order_id(str): order_id of merchant or partner
+            payload(dict): order body
+
+        Returns:
+            response or exception
+        """
+        path = f'/channel/{channel_id}/order/{order_id}'
+        url = urlparse(self._fulfillment_url)._replace(path=path).geturl()
+
+        r = requests.put(url=url, json=payload, headers=self.headers)
+        validate_response(r)
+
+        return {
+            'code': r.status_code,
+            'message': 'Order has been successfully created'
+        }

@@ -5,7 +5,7 @@ CpmsConnector is connector to aCommerce (CPMS) Public Api
 
 Installing
 ----------
-install using pip or put it to your requirements file
+install using pip or put it to your requirements file if you want to get directly from repository
 
 .. code-block:: bash
 

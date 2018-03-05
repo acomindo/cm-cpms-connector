@@ -9,7 +9,7 @@ install using pip or put it to your requirements file if you want to get directl
 
 .. code-block:: bash
 
-    $ pip install git+ssh://git@github.com:acomindo/cm-cpms-connector.git
+    $ pip install git+https://github.com/acomindo/cm-cpms-connector.git
 
 
 

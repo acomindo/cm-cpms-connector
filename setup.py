@@ -17,12 +17,17 @@ setup(
     maintainer='ID Integration Team',
     maintainer_email='id.channeldev@acommerce.asia',
     description='Connector to cpms public api',
+    keywords=['aCommerce', 'wms', 'connector'],
     long_description=readme,
-    license='aCommerce',
+    license='BSD',
     platform='any',
+    project_urls={
+        'Source': 'https://github.com/acomindo/cm-cpms-connector/',
+    },
     install_requires=[
         'requests',
     ],
+    python_requires='>=3',
     test_suite='nose.collector',
     tests_require=['nose'],
     classifiers=[

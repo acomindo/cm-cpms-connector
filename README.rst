@@ -9,7 +9,7 @@ install using pip or put it to your requirements file
 
 .. code-block:: bash
 
-    $ pip install git+ssh://git@bitbucket.org/acommerceplatform/cm-cpms-connector.git
+    $ pip install git+ssh://git@github.com:acomindo/cm-cpms-connector.git
 
 
 
